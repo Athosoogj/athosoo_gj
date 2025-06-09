@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아뜰리에호수 광주 매출입력 시스템</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>아뜰리에호수 광주 매출입력 시스템</h1>
+            <button id="adminBtn" class="btn btn--secondary btn--sm">관리자 대시보드</button>
+        </header>
+
+        <div class="main-layout">
+            <div class="input-section">
+                <!-- 예약자 정보 -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3>예약자 정보</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="customerName">예약자 이름</label>
+                            <input type="text" id="customerName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="partySize">일행 수</label>
+                            <select id="partySize" class="form-control" required>
+                                <option value="">선택하세요</option>
+                                <option value="1">1명</option>
+                                <option value="2">2명</option>
+                                <option value="3">3명</option>
+                                <option value="4">4명</option>
+                                <option value="5">5명</option>
+                                <option value="6">6명</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 제품 선택 -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3>제품 선택</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="productSelect">제품</label>
+                            <select id="productSelect" class="form-control">
+                                <option value="">선택하세요</option>
+                            </select>
+                            <div id="productPrice" class="price-info"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">도금 개수</label>
+                            <div class="counter-group">
+                                <button type="button" id="gildingMinus" class="btn btn--secondary btn--sm">-</button>
+                                <span id="gildingCount" class="counter-value">0</span>
+                                <button type="button" id="gildingPlus" class="btn btn--secondary btn--sm">+</button>
+                                <span class="counter-label">개 (1개당 20천원)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 동적 테이블 -->
+                <div id="partyTable" class="card hidden">
+                    <div class="card__body">
+                        <h3>일행 정보</h3>
+                        <div class="table-container">
+                            <table id="partyInfoTable" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>제품명</th>
+                                        <th>디자인 성별</th>
+                                        <th>실측 사이즈</th>
+                                        <th>사용 재고 사이즈</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 가격 계산 -->
+                <div id="priceCalculation" class="card hidden">
+                    <div class="card__body">
+                        <h3>가격 계산</h3>
+                        <div id="priceBreakdown"></div>
+                        <div id="totalPrice" class="total-price"></div>
+                    </div>
+                </div>
+
+                <!-- 결제 정보 -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3>결제 정보</h3>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="cashPayment" class="payment-checkbox">
+                                    현금
+                                </label>
+                                <div id="cashAmount" class="payment-input hidden">
+                                    <input type="number" placeholder="금액" class="form-control amount-input"> 천원
+                                </div>
+                            </div>
+                            <div class="payment-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="transferPayment" class="payment-checkbox">
+                                    계좌이체
+                                </label>
+                                <div id="transferAmount" class="payment-input hidden">
+                                    <input type="number" placeholder="금액" class="form-control amount-input"> 천원
+                                </div>
+                            </div>
+                            <div class="payment-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="cardPayment" class="payment-checkbox">
+                                    카드
+                                </label>
+                                <div id="cardAmount" class="payment-input hidden">
+                                    <input type="number" placeholder="금액" class="form-control amount-input"> 천원
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 손님 형태 -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3>손님 형태</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="customerType" value="regular" checked>
+                                일반
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="customerType" value="experience">
+                                체험
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="customerType" value="other">
+                                기타
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 비고 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="form-group">
+                            <label class="form-label" for="notes">비고</label>
+                            <textarea id="notes" class="form-control" rows="3" placeholder="추가 정보를 입력하세요"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 제출 버튼 -->
+                <button id="submitBtn" class="btn btn--primary btn--lg btn--full-width">매출 입력</button>
+            </div>
+
+            <!-- 통계 섹션 -->
+            <div class="stats-section">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>오늘 현황</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">일반 손님</div>
+                                <div class="stat-value" id="regularCustomers">0명</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">체험 손님</div>
+                                <div class="stat-value" id="experienceCustomers">0명</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">기타 손님</div>
+                                <div class="stat-value" id="otherCustomers">0명</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">카드 결제</div>
+                                <div class="stat-value" id="cardPayments">0건</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">계좌이체</div>
+                                <div class="stat-value" id="transferPayments">0건</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">현금 결제</div>
+                                <div class="stat-value" id="cashPayments">0건</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 로그인 모달 -->
+    <div id="adminModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>관리자 인증</h3>
+                <button id="closeModal" class="btn btn--secondary btn--sm">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">비밀번호</label>
+                    <input type="password" id="adminPassword" class="form-control" placeholder="관리자 비밀번호를 입력하세요">
+                </div>
+                <button id="adminLogin" class="btn btn--primary btn--full-width">로그인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 대시보드 -->
+    <div id="adminDashboard" class="dashboard hidden">
+        <div class="dashboard-header">
+            <h2>관리자 대시보드</h2>
+            <button id="closeDashboard" class="btn btn--secondary">닫기</button>
+        </div>
+        <div class="dashboard-content">
+            <div class="dashboard-stats">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>오늘 매출 현황</h3>
+                        <div id="dashboardStats"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-data">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>매출 기록</h3>
+                        <div id="salesRecords"></div>
+                        <div class="dashboard-actions">
+                            <button id="exportData" class="btn btn--primary">데이터 내보내기</button>
+                            <button id="clearData" class="btn btn--outline">데이터 삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="remote-access-info">
+            <div class="card">
+                <div class="card__body">
+                    <h4>원격 접근 방법</h4>
+                    <p>관리자가 원격으로 대시보드에 접근하려면:</p>
+                    <ol>
+                        <li>매장 컴퓨터의 IP 주소: <code id="ipAddress">192.168.1.xxx</code></li>
+                        <li>포트 번호를 통해 외부 접근 설정 필요</li>
+                        <li>VPN 또는 TeamViewer 등 원격 데스크톱 도구 사용</li>
+                        <li>클라우드 기반 솔루션 도입 권장</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
