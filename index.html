@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반지공방 매출 입력 시스템</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>반지공방 매출 입력 시스템</h1>
+            <p class="subtitle">직원용 주문 및 매출 관리</p>
+        </div>
+
+        <form id="salesForm" class="sales-form">
+            <!-- 반지 제품 선택 -->
+            <div class="form-group">
+                <label for="ringSelect" class="form-label">반지 제품 선택</label>
+                <select id="ringSelect" class="form-control" required>
+                    <option value="">반지를 선택해주세요</option>
+                </select>
+            </div>
+
+            <!-- 도금 개수 -->
+            <div class="form-group">
+                <label class="form-label">도금 개수 (1개당 20천원)</label>
+                <div class="quantity-control">
+                    <button type="button" class="btn btn--secondary quantity-btn" id="platingMinus">-</button>
+                    <input type="number" id="platingCount" class="form-control quantity-input" value="0" min="0" readonly>
+                    <button type="button" class="btn btn--secondary quantity-btn" id="platingPlus">+</button>
+                </div>
+            </div>
+
+            <!-- 참고가격 계산 -->
+            <div class="form-group">
+                <button type="button" class="btn btn--primary btn--lg" id="calculatePrice">참고가격 계산</button>
+                <div id="priceResult" class="price-result hidden"></div>
+            </div>
+
+            <!-- 결제수단 -->
+            <div class="form-group">
+                <label class="form-label">결제수단 (다중 선택 가능)</label>
+                <div class="payment-methods">
+                    <div class="payment-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="cashPayment" class="payment-checkbox">
+                            <label for="cashPayment">현금</label>
+                        </div>
+                        <input type="number" id="cashAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
+                    </div>
+                    <div class="payment-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="transferPayment" class="payment-checkbox">
+                            <label for="transferPayment">계좌이체</label>
+                        </div>
+                        <input type="number" id="transferAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
+                    </div>
+                    <div class="payment-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="cardPayment" class="payment-checkbox">
+                            <label for="cardPayment">카드</label>
+                        </div>
+                        <input type="number" id="cardAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 손님 형태 -->
+            <div class="form-group">
+                <label class="form-label">손님 형태</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="regular" name="customerType" value="regular" required>
+                        <label for="regular">일반</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="experience" name="customerType" value="experience">
+                        <label for="experience">체험</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="other" name="customerType" value="other">
+                        <label for="other">기타</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 비고란 -->
+            <div class="form-group">
+                <label for="notes" class="form-label">비고</label>
+                <textarea id="notes" class="form-control" rows="3" placeholder="필요시 추가 정보를 입력해주세요"></textarea>
+            </div>
+
+            <!-- 매출 입력 버튼 -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary btn--lg btn--full-width">매출 입력</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 팝업 모달 -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>전송 완료</h3>
+            <p>전송되었습니다</p>
+            <button type="button" class="btn btn--primary" id="closeModal">확인</button>
+        </div>
+    </div>
+    <div class="modal-overlay hidden" id="modalOverlay"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
