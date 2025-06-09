@@ -1,24 +1,24 @@
 // 제품 데이터 및 설정
 const ringProducts = [
-  {"name": "베이직", "price_male": 80, "price_female": 70},
-  {"name": "플랫", "price_male": 90, "price_female": 90},
-  {"name": "클래식", "price_male": 90, "price_female": 80},
-  {"name": "젬스톤", "price_male": 90, "price_female": 100},
-  {"name": "엥게이지", "price_male": 120, "price_female": 120},
-  {"name": "파시넷", "price_male": 130, "price_female": 130},
-  {"name": "쥬빌레", "price_male": 130, "price_female": 120},
-  {"name": "루미에", "price_male": 120, "price_female": 110},
-  {"name": "프로미스", "price_male": 110, "price_female": 100},
-  {"name": "스텔라", "price_male": 120, "price_female": 130},
-  {"name": "써밋", "price_male": 140, "price_female": 130},
-  {"name": "키스톤", "price_male": 130, "price_female": 120},
-  {"name": "포커스", "price_male": 110, "price_female": 120},
-  {"name": "오르빗", "price_male": 120, "price_female": 110},
-  {"name": "젬브릿지", "price_male": 130, "price_female": 140},
-  {"name": "웨이브", "price_male": 120, "price_female": 130},
-  {"name": "러브넛", "price_male": 140, "price_female": 130},
-  {"name": "로미오와줄리엣", "price_male": 150, "price_female": 140},
-  {"name": "새턴", "price_male": 140, "price_female": 150}
+    { name: "베이직", price_male: 80000, price_female: 70000 },
+    { name: "플랫", price_male: 90000, price_female: 90000 },
+    { name: "클래식", price_male: 90000, price_female: 80000 },
+    { name: "젬스톤", price_male: 90000, price_female: 100000 },
+    { name: "엥게이지", price_male: 90000, price_female: 90000 },
+    { name: "파시넷", price_male: 90000, price_female: 100000 },
+    { name: "쥬빌레", price_male: 110000, price_female: 110000 },
+    { name: "루미에", price_male: 120000, price_female: 120000 },
+    { name: "프로미스", price_male: 110000, price_female: 110000 },
+    { name: "스텔라", price_male: 130000, price_female: 130000 },
+    { name: "써밋", price_male: 120000, price_female: 120000 },
+    { name: "키스톤", price_male: 120000, price_female: 120000 },
+    { name: "포커스", price_male: 110000, price_female: 120000 },
+    { name: "오르빗", price_male: 110000, price_female: 140000 },
+    { name: "젬브릿지", price_male: 100000, price_female: 130000 },
+    { name: "웨이브", price_male: 110000, price_female: 140000 },
+    { name: "러브넛", price_male: 110000, price_female: 130000 },
+    { name: "로미오와줄", price_male: 120000, price_female: 140000 },
+    { name: "새턴", price_male: 110000, price_female: 130000 }
 ];
 
 const stockSizes = [4, 7, 10, 13, 16, 20];
