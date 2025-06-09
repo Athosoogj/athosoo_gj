@@ -1,305 +1,452 @@
-// 반지공방 매출 입력 시스템 JavaScript
-
-// 제품 데이터 (정확한 19개 제품)
-const ringsData = [
-    {name: "베이직", male_price: 80000, female_price: 70000},
-    {name: "플랫", male_price: 90000, female_price: 90000},
-    {name: "클래식", male_price: 90000, female_price: 80000},
-    {name: "젬스톤", male_price: 90000, female_price: 100000},
-    {name: "엥게이지", male_price: 90000, female_price: 90000},
-    {name: "파시넷", male_price: 90000, female_price: 100000},
-    {name: "쥬빌레", male_price: 110000, female_price: 110000},
-    {name: "루미에", male_price: 120000, female_price: 120000},
-    {name: "프로미스", male_price: 110000, female_price: 110000},
-    {name: "스텔라", male_price: 130000, female_price: 130000},
-    {name: "써밋", male_price: 120000, female_price: 120000},
-    {name: "키스톤", male_price: 120000, female_price: 120000},
-    {name: "포커스", male_price: 110000, female_price: 120000},
-    {name: "오르빗", male_price: 110000, female_price: 140000},
-    {name: "젬브릿지", male_price: 100000, female_price: 130000},
-    {name: "웨이브", male_price: 110000, female_price: 140000},
-    {name: "러브넛", male_price: 110000, female_price: 130000},
-    {name: "로미오와줄리엣", male_price: 120000, female_price: 140000},
-    {name: "새턴", male_price: 110000, female_price: 130000}
+// 반지 제품 데이터
+const ringProducts = [
+    {"name": "베이직", "male_price": 80, "female_price": 70},
+    {"name": "플랫", "male_price": 90, "female_price": 90},
+    {"name": "클래식", "male_price": 90, "female_price": 80},
+    {"name": "젬스톤", "male_price": 90, "female_price": 100},
+    {"name": "엥게이지", "male_price": 110, "female_price": 120},
+    {"name": "파시넷", "male_price": 100, "female_price": 110},
+    {"name": "쥬빌레", "male_price": 95, "female_price": 105},
+    {"name": "루미에", "male_price": 105, "female_price": 115},
+    {"name": "프로미스", "male_price": 115, "female_price": 125},
+    {"name": "스텔라", "male_price": 120, "female_price": 130},
+    {"name": "써밋", "male_price": 125, "female_price": 135},
+    {"name": "키스톤", "male_price": 110, "female_price": 120},
+    {"name": "포커스", "male_price": 100, "female_price": 110},
+    {"name": "오르빗", "male_price": 130, "female_price": 140},
+    {"name": "젬브릿지", "male_price": 135, "female_price": 145},
+    {"name": "웨이브", "male_price": 85, "female_price": 95},
+    {"name": "러브넛", "male_price": 95, "female_price": 105},
+    {"name": "로미오와줄리엣", "male_price": 140, "female_price": 150},
+    {"name": "새턴", "male_price": 120, "female_price": 130}
 ];
 
-const platingPrice = 20000;
+const platingPrice = 20; // 천원 단위
 const vatRate = 0.1;
 
 // DOM 요소들
-let ringSelect, platingCount, platingMinus, platingPlus, calculateBtn, priceResult;
-let cashPayment, transferPayment, cardPayment;
-let cashAmount, transferAmount, cardAmount;
-let salesForm, successModal, modalOverlay, closeModal;
+let elements = {};
 
 // 초기화
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing...');
     initializeElements();
-    populateRingSelect();
-    attachEventListeners();
+    initializeRingProducts();
+    setupEventListeners();
+    updateDailySummary();
 });
 
 function initializeElements() {
-    ringSelect = document.getElementById('ringSelect');
-    platingCount = document.getElementById('platingCount');
-    platingMinus = document.getElementById('platingMinus');
-    platingPlus = document.getElementById('platingPlus');
-    calculateBtn = document.getElementById('calculatePrice');
-    priceResult = document.getElementById('priceResult');
-    
-    cashPayment = document.getElementById('cashPayment');
-    transferPayment = document.getElementById('transferPayment');
-    cardPayment = document.getElementById('cardPayment');
-    
-    cashAmount = document.getElementById('cashAmount');
-    transferAmount = document.getElementById('transferAmount');
-    cardAmount = document.getElementById('cardAmount');
-    
-    salesForm = document.getElementById('salesForm');
-    successModal = document.getElementById('successModal');
-    modalOverlay = document.getElementById('modalOverlay');
-    closeModal = document.getElementById('closeModal');
+    elements = {
+        ringProduct: document.getElementById('ringProduct'),
+        selectedProductPrice: document.getElementById('selectedProductPrice'),
+        platingCount: document.getElementById('platingCount'),
+        platingMinus: document.getElementById('platingMinus'),
+        platingPlus: document.getElementById('platingPlus'),
+        calculatePrice: document.getElementById('calculatePrice'),
+        priceResult: document.getElementById('priceResult'),
+        
+        // 결제수단
+        cashPayment: document.getElementById('cashPayment'),
+        transferPayment: document.getElementById('transferPayment'),
+        cardPayment: document.getElementById('cardPayment'),
+        cashAmount: document.getElementById('cashAmount'),
+        transferAmount: document.getElementById('transferAmount'),
+        cardAmount: document.getElementById('cardAmount'),
+        
+        // 기타
+        notes: document.getElementById('notes'),
+        submitSales: document.getElementById('submitSales'),
+        
+        // 모달
+        successModal: document.getElementById('successModal'),
+        closeModal: document.getElementById('closeModal'),
+        errorAlert: document.getElementById('errorAlert'),
+        
+        // 요약 데이터
+        totalOrders: document.getElementById('totalOrders'),
+        totalSales: document.getElementById('totalSales'),
+        cashTotal: document.getElementById('cashTotal'),
+        transferTotal: document.getElementById('transferTotal'),
+        cardTotal: document.getElementById('cardTotal'),
+        popularProducts: document.getElementById('popularProducts'),
+        generalRatio: document.getElementById('generalRatio'),
+        experienceRatio: document.getElementById('experienceRatio'),
+        otherRatio: document.getElementById('otherRatio')
+    };
+    console.log('Elements initialized:', Object.keys(elements).length);
 }
 
-function populateRingSelect() {
-    ringsData.forEach(ring => {
-        const option = document.createElement('option');
-        option.value = JSON.stringify(ring);
-        option.textContent = `${ring.name} (남: ${formatPriceThousands(ring.male_price)}, 여: ${formatPriceThousands(ring.female_price)})`;
-        ringSelect.appendChild(option);
-    });
-}
-
-function attachEventListeners() {
-    // 도금 개수 조절
-    platingMinus.addEventListener('click', () => {
-        const current = parseInt(platingCount.value);
-        if (current > 0) {
-            platingCount.value = current - 1;
-        }
-    });
-    
-    platingPlus.addEventListener('click', () => {
-        const current = parseInt(platingCount.value);
-        platingCount.value = current + 1;
-    });
-    
-    // 참고가격 계산
-    calculateBtn.addEventListener('click', calculatePrice);
-    
-    // 결제수단 체크박스 - 수정된 부분
-    cashPayment.addEventListener('change', function(e) {
-        togglePaymentAmount(cashAmount, e.target.checked);
-    });
-    
-    transferPayment.addEventListener('change', function(e) {
-        togglePaymentAmount(transferAmount, e.target.checked);
-    });
-    
-    cardPayment.addEventListener('change', function(e) {
-        togglePaymentAmount(cardAmount, e.target.checked);
-    });
-    
-    // 폼 제출
-    salesForm.addEventListener('submit', handleFormSubmit);
-    
-    // 모달 닫기
-    closeModal.addEventListener('click', closeSuccessModal);
-    modalOverlay.addEventListener('click', closeSuccessModal);
-}
-
-function togglePaymentAmount(amountInput, isChecked) {
-    if (isChecked) {
-        amountInput.disabled = false;
-        amountInput.removeAttribute('disabled');
-        amountInput.focus();
-    } else {
-        amountInput.disabled = true;
-        amountInput.value = '';
-        amountInput.classList.remove('error');
-    }
-}
-
-function calculatePrice() {
-    if (!ringSelect.value) {
-        showError('반지를 선택해주세요.');
+function initializeRingProducts() {
+    console.log('Initializing ring products...');
+    if (!elements.ringProduct) {
+        console.error('Ring product select element not found');
         return;
     }
     
-    const selectedRing = JSON.parse(ringSelect.value);
-    const platingCnt = parseInt(platingCount.value) || 0;
+    // 기존 옵션들 제거 (기본 옵션 제외)
+    while (elements.ringProduct.children.length > 1) {
+        elements.ringProduct.removeChild(elements.ringProduct.lastChild);
+    }
     
-    // 공급가액 계산 (남녀 각 1개 + 도금)
-    const ringTotal = selectedRing.male_price + selectedRing.female_price;
-    const platingTotal = platingCnt * platingPrice;
-    const supplyPrice = ringTotal + platingTotal;
-    
-    // 부가세 계산
-    const vat = Math.round(supplyPrice * vatRate);
-    const totalPrice = supplyPrice + vat;
-    
-    // 결과 표시
-    displayPriceResult(supplyPrice, vat, totalPrice, selectedRing, platingCnt);
+    ringProducts.forEach(product => {
+        const option = document.createElement('option');
+        option.value = product.name;
+        option.textContent = `${product.name} (남: ${product.male_price}천원, 여: ${product.female_price}천원)`;
+        elements.ringProduct.appendChild(option);
+    });
+    console.log('Ring products added:', ringProducts.length);
 }
 
-function displayPriceResult(supplyPrice, vat, totalPrice, ring, platingCnt) {
-    priceResult.innerHTML = `
+function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
+    // 반지 제품 선택
+    if (elements.ringProduct) {
+        elements.ringProduct.addEventListener('change', handleProductChange);
+    }
+    
+    // 도금 개수 조절
+    if (elements.platingMinus) {
+        elements.platingMinus.addEventListener('click', () => adjustPlating(-1));
+    }
+    if (elements.platingPlus) {
+        elements.platingPlus.addEventListener('click', () => adjustPlating(1));
+    }
+    
+    // 참고가격 계산
+    if (elements.calculatePrice) {
+        elements.calculatePrice.addEventListener('click', calculateReferencePrice);
+    }
+    
+    // 결제수단 체크박스
+    if (elements.cashPayment) {
+        elements.cashPayment.addEventListener('change', () => togglePaymentInput('cash'));
+    }
+    if (elements.transferPayment) {
+        elements.transferPayment.addEventListener('change', () => togglePaymentInput('transfer'));
+    }
+    if (elements.cardPayment) {
+        elements.cardPayment.addEventListener('change', () => togglePaymentInput('card'));
+    }
+    
+    // 매출 입력
+    if (elements.submitSales) {
+        elements.submitSales.addEventListener('click', handleSubmitSales);
+    }
+    
+    // 모달 닫기
+    if (elements.closeModal) {
+        elements.closeModal.addEventListener('click', closeSuccessModal);
+    }
+    if (elements.successModal) {
+        elements.successModal.addEventListener('click', function(e) {
+            if (e.target === elements.successModal) {
+                closeSuccessModal();
+            }
+        });
+    }
+    
+    console.log('Event listeners set up');
+}
+
+function handleProductChange() {
+    console.log('Product changed to:', elements.ringProduct.value);
+    const selectedProduct = ringProducts.find(p => p.name === elements.ringProduct.value);
+    
+    if (selectedProduct) {
+        elements.selectedProductPrice.innerHTML = `
+            <strong>선택된 제품:</strong> ${selectedProduct.name}<br>
+            남자 반지: ${selectedProduct.male_price}천원 | 여자 반지: ${selectedProduct.female_price}천원
+        `;
+        elements.selectedProductPrice.classList.add('show');
+    } else {
+        elements.selectedProductPrice.classList.remove('show');
+    }
+}
+
+function adjustPlating(delta) {
+    const currentCount = parseInt(elements.platingCount.textContent);
+    const newCount = Math.max(0, currentCount + delta);
+    elements.platingCount.textContent = newCount;
+    console.log('Plating count adjusted to:', newCount);
+}
+
+function calculateReferencePrice() {
+    console.log('Calculating reference price...');
+    const selectedProduct = ringProducts.find(p => p.name === elements.ringProduct.value);
+    
+    if (!selectedProduct) {
+        showError('반지 제품을 먼저 선택해주세요.');
+        return;
+    }
+    
+    const platingCount = parseInt(elements.platingCount.textContent);
+    console.log('Selected product:', selectedProduct, 'Plating count:', platingCount);
+    
+    // 남자 반지 1개 + 여자 반지 1개 + 도금 비용 (천원 단위)
+    const basePrice = selectedProduct.male_price + selectedProduct.female_price;
+    const platingCost = platingCount * platingPrice;
+    const subtotal = basePrice + platingCost;
+    
+    // VAT 계산
+    const vatAmount = Math.round(subtotal * vatRate);
+    const total = subtotal + vatAmount;
+    
+    console.log('Price calculation:', { basePrice, platingCost, subtotal, vatAmount, total });
+    
+    elements.priceResult.innerHTML = `
         <div class="price-breakdown">
-            <div class="price-line">
-                <span>${ring.name} (남녀 각 1개)</span>
-                <span>${formatPriceThousands(ring.male_price + ring.female_price)}</span>
-            </div>
-            ${platingCnt > 0 ? `
-            <div class="price-line">
-                <span>도금 ${platingCnt}개</span>
-                <span>${formatPriceThousands(platingCnt * platingPrice)}</span>
-            </div>
-            ` : ''}
-            <div class="price-line price-total">
-                <span>공급가 ${formatPriceThousands(supplyPrice)} + 부가세 ${formatPriceThousands(vat)}</span>
-                <span><strong>합계 ${formatPriceThousands(totalPrice)}</strong></span>
+            <div>기본 가격 (남+여): ${basePrice}천원</div>
+            <div>도금 비용 (${platingCount}개): ${platingCost}천원</div>
+            <div>공급가: ${subtotal}천원</div>
+            <div>부가세: ${vatAmount}천원</div>
+            <div style="border-top: 1px solid var(--color-border); padding-top: 8px; margin-top: 8px; font-weight: var(--font-weight-bold);">
+                합계: ${total}천원
             </div>
         </div>
     `;
-    
-    priceResult.classList.remove('hidden');
-    priceResult.classList.add('highlight');
-    
-    // 하이라이트 효과 제거
-    setTimeout(() => {
-        priceResult.classList.remove('highlight');
-    }, 2000);
+    elements.priceResult.classList.add('show');
 }
 
-function handleFormSubmit(e) {
-    e.preventDefault();
+function togglePaymentInput(type) {
+    const checkbox = elements[type + 'Payment'];
+    const input = elements[type + 'Amount'];
+    
+    console.log('Toggling payment input for:', type, 'Checked:', checkbox.checked);
+    
+    if (checkbox.checked) {
+        input.disabled = false;
+        input.focus();
+    } else {
+        input.disabled = true;
+        input.value = '';
+    }
+}
+
+function handleSubmitSales() {
+    console.log('Submitting sales...');
     
     if (!validateForm()) {
         return;
     }
     
-    // 로딩 상태 표시
-    const submitBtn = salesForm.querySelector('button[type="submit"]');
-    submitBtn.classList.add('loading');
-    submitBtn.disabled = true;
+    const salesData = collectFormData();
+    console.log('Sales data collected:', salesData);
     
-    // 실제로는 서버에 데이터 전송
-    setTimeout(() => {
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-        showSuccessModal();
-        resetForm();
-    }, 500);
+    saveSalesData(salesData);
+    showSuccessModal();
+    resetForm();
+    updateDailySummary();
 }
 
 function validateForm() {
-    let isValid = true;
+    console.log('Validating form...');
     
-    // 반지 선택 확인
-    if (!ringSelect.value) {
-        showFieldError(ringSelect, '반지를 선택해주세요.');
-        isValid = false;
-    } else {
-        clearFieldError(ringSelect);
+    // 반지 제품 선택 확인
+    if (!elements.ringProduct.value) {
+        showError('반지 제품을 선택해주세요.');
+        return false;
     }
     
-    // 결제수단 및 금액 확인
-    const paymentMethods = [
-        {checkbox: cashPayment, amount: cashAmount, name: '현금'},
-        {checkbox: transferPayment, amount: transferAmount, name: '계좌이체'},
-        {checkbox: cardPayment, amount: cardAmount, name: '카드'}
-    ];
-    
-    let hasPayment = false;
-    paymentMethods.forEach(method => {
-        if (method.checkbox.checked) {
-            hasPayment = true;
-            const amount = parseFloat(method.amount.value);
-            if (!amount || amount <= 0) {
-                showFieldError(method.amount, `${method.name} 금액을 입력해주세요.`);
-                isValid = false;
-            } else {
-                clearFieldError(method.amount);
-            }
-        }
-    });
+    // 결제수단 하나 이상 선택 확인
+    const hasPayment = elements.cashPayment.checked || 
+                      elements.transferPayment.checked || 
+                      elements.cardPayment.checked;
     
     if (!hasPayment) {
-        showError('최소 하나의 결제수단을 선택해주세요.');
-        isValid = false;
+        showError('결제수단을 하나 이상 선택해주세요.');
+        return false;
     }
     
-    // 손님 형태 확인
-    const customerType = document.querySelector('input[name="customerType"]:checked');
-    if (!customerType) {
-        showError('손님 형태를 선택해주세요.');
-        isValid = false;
+    // 선택된 결제수단에 금액 입력 확인
+    if (elements.cashPayment.checked && (!elements.cashAmount.value || elements.cashAmount.value <= 0)) {
+        showError('현금 결제 금액을 입력해주세요.');
+        return false;
     }
     
-    return isValid;
+    if (elements.transferPayment.checked && (!elements.transferAmount.value || elements.transferAmount.value <= 0)) {
+        showError('계좌이체 금액을 입력해주세요.');
+        return false;
+    }
+    
+    if (elements.cardPayment.checked && (!elements.cardAmount.value || elements.cardAmount.value <= 0)) {
+        showError('카드 결제 금액을 입력해주세요.');
+        return false;
+    }
+    
+    console.log('Form validation passed');
+    return true;
 }
 
-function showFieldError(field, message) {
-    field.classList.add('error');
+function collectFormData() {
+    const customerType = document.querySelector('input[name="customerType"]:checked').value;
     
-    // 기존 에러 메시지 제거
-    const existingError = field.parentNode.querySelector('.error-message');
-    if (existingError) {
-        existingError.remove();
-    }
+    const cashAmount = elements.cashPayment.checked ? parseInt(elements.cashAmount.value || 0) : 0;
+    const transferAmount = elements.transferPayment.checked ? parseInt(elements.transferAmount.value || 0) : 0;
+    const cardAmount = elements.cardPayment.checked ? parseInt(elements.cardAmount.value || 0) : 0;
     
-    // 새 에러 메시지 추가
-    const errorMsg = document.createElement('span');
-    errorMsg.className = 'error-message';
-    errorMsg.textContent = message;
-    field.parentNode.appendChild(errorMsg);
+    return {
+        id: Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString(),
+        product: elements.ringProduct.value,
+        platingCount: parseInt(elements.platingCount.textContent),
+        payments: {
+            cash: cashAmount * 1000, // 천원 단위를 원 단위로 변환
+            transfer: transferAmount * 1000,
+            card: cardAmount * 1000
+        },
+        customerType: customerType,
+        notes: elements.notes.value,
+        totalAmount: (cashAmount + transferAmount + cardAmount) * 1000 // 원 단위로 저장
+    };
 }
 
-function clearFieldError(field) {
-    field.classList.remove('error');
-    const errorMsg = field.parentNode.querySelector('.error-message');
-    if (errorMsg) {
-        errorMsg.remove();
+function saveSalesData(salesData) {
+    try {
+        const existingData = JSON.parse(localStorage.getItem('salesData') || '[]');
+        existingData.push(salesData);
+        localStorage.setItem('salesData', JSON.stringify(existingData));
+        console.log('Sales data saved successfully');
+    } catch (error) {
+        console.error('Error saving sales data:', error);
+        showError('데이터 저장 중 오류가 발생했습니다.');
+    }
+}
+
+function resetForm() {
+    console.log('Resetting form...');
+    
+    elements.ringProduct.value = '';
+    elements.selectedProductPrice.classList.remove('show');
+    elements.platingCount.textContent = '0';
+    elements.priceResult.classList.remove('show');
+    
+    elements.cashPayment.checked = false;
+    elements.transferPayment.checked = false;
+    elements.cardPayment.checked = false;
+    
+    elements.cashAmount.value = '';
+    elements.transferAmount.value = '';
+    elements.cardAmount.value = '';
+    elements.cashAmount.disabled = true;
+    elements.transferAmount.disabled = true;
+    elements.cardAmount.disabled = true;
+    
+    const generalRadio = document.querySelector('input[name="customerType"][value="일반"]');
+    if (generalRadio) {
+        generalRadio.checked = true;
+    }
+    elements.notes.value = '';
+}
+
+function updateDailySummary() {
+    console.log('Updating daily summary...');
+    
+    const today = new Date().toISOString().split('T')[0];
+    const allData = JSON.parse(localStorage.getItem('salesData') || '[]');
+    const todayData = allData.filter(item => item.date === today);
+    
+    console.log('Today data:', todayData.length, 'items');
+    
+    // 총 주문 건수
+    elements.totalOrders.textContent = `${todayData.length}건`;
+    
+    // 총 매출액 (천원 단위로 표시)
+    const totalSales = todayData.reduce((sum, item) => sum + item.totalAmount, 0);
+    elements.totalSales.textContent = `${Math.round(totalSales / 1000)}천원`;
+    
+    // 결제수단별 매출
+    const cashTotal = todayData.reduce((sum, item) => sum + item.payments.cash, 0);
+    const transferTotal = todayData.reduce((sum, item) => sum + item.payments.transfer, 0);
+    const cardTotal = todayData.reduce((sum, item) => sum + item.payments.card, 0);
+    
+    elements.cashTotal.textContent = `${Math.round(cashTotal / 1000)}천원`;
+    elements.transferTotal.textContent = `${Math.round(transferTotal / 1000)}천원`;
+    elements.cardTotal.textContent = `${Math.round(cardTotal / 1000)}천원`;
+    
+    // 인기 제품 TOP 3
+    updatePopularProducts(todayData);
+    
+    // 고객 유형별 비율
+    updateCustomerRatio(todayData);
+}
+
+function updatePopularProducts(todayData) {
+    if (todayData.length === 0) {
+        elements.popularProducts.innerHTML = '<div class="product-rank">데이터 없음</div>';
+        return;
+    }
+    
+    const productCounts = {};
+    todayData.forEach(item => {
+        productCounts[item.product] = (productCounts[item.product] || 0) + 1;
+    });
+    
+    const sortedProducts = Object.entries(productCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+    
+    elements.popularProducts.innerHTML = sortedProducts
+        .map((product, index) => 
+            `<div class="product-rank">${index + 1}. ${product[0]} (${product[1]}건)</div>`
+        ).join('');
+}
+
+function updateCustomerRatio(todayData) {
+    if (todayData.length === 0) {
+        elements.generalRatio.textContent = '0%';
+        elements.experienceRatio.textContent = '0%';
+        elements.otherRatio.textContent = '0%';
+        return;
+    }
+    
+    const typeCounts = {
+        '일반': 0,
+        '체험': 0,
+        '기타': 0
+    };
+    
+    todayData.forEach(item => {
+        typeCounts[item.customerType]++;
+    });
+    
+    const total = todayData.length;
+    elements.generalRatio.textContent = `${Math.round((typeCounts['일반'] / total) * 100)}%`;
+    elements.experienceRatio.textContent = `${Math.round((typeCounts['체험'] / total) * 100)}%`;
+    elements.otherRatio.textContent = `${Math.round((typeCounts['기타'] / total) * 100)}%`;
+}
+
+function showSuccessModal() {
+    console.log('Showing success modal...');
+    if (elements.successModal) {
+        elements.successModal.classList.remove('hidden');
+    }
+}
+
+function closeSuccessModal() {
+    console.log('Closing success modal...');
+    if (elements.successModal) {
+        elements.successModal.classList.add('hidden');
     }
 }
 
 function showError(message) {
-    alert(message);
+    console.log('Showing error:', message);
+    if (elements.errorAlert) {
+        elements.errorAlert.textContent = message;
+        elements.errorAlert.classList.remove('hidden');
+        
+        setTimeout(() => {
+            elements.errorAlert.classList.add('hidden');
+        }, 3000);
+    }
 }
 
-function showSuccessModal() {
-    successModal.classList.remove('hidden');
-    modalOverlay.classList.remove('hidden');
-}
-
-function closeSuccessModal() {
-    successModal.classList.add('hidden');
-    modalOverlay.classList.add('hidden');
-}
-
-function resetForm() {
-    // 폼 초기화
-    salesForm.reset();
-    
-    // 도금 개수 초기화
-    platingCount.value = 0;
-    
-    // 가격 결과 숨기기
-    priceResult.classList.add('hidden');
-    
-    // 결제 금액 입력창 비활성화
-    [cashAmount, transferAmount, cardAmount].forEach(input => {
-        input.disabled = true;
-        input.value = '';
-        clearFieldError(input);
-    });
-    
-    // 에러 상태 제거
-    document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-    document.querySelectorAll('.error-message').forEach(el => el.remove());
-}
-
-// 가격을 천원단위로 표시하는 함수
-function formatPriceThousands(price) {
-    return (price / 1000).toLocaleString('ko-KR') + '천원';
-}
+// 키보드 이벤트 처리
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeSuccessModal();
+    }
+});

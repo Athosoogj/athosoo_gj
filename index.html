@@ -3,110 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>반지공방 매출 입력 시스템</title>
+    <title>아뜰리에호수 광주 매출입력 시스템</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>반지공방 매출 입력 시스템</h1>
-            <p class="subtitle">직원용 주문 및 매출 관리</p>
+        <header class="header">
+            <h1>아뜰리에호수 광주 매출입력 시스템</h1>
+        </header>
+
+        <div class="main-content">
+            <!-- 좌측 매출 입력 폼 -->
+            <div class="input-section">
+                <div class="card">
+                    <div class="card__body">
+                        <!-- 반지 제품 선택 -->
+                        <div class="form-group">
+                            <label for="ringProduct" class="form-label">반지 제품 선택</label>
+                            <select id="ringProduct" class="form-control">
+                                <option value="">제품을 선택해주세요</option>
+                            </select>
+                            <div id="selectedProductPrice" class="product-price-display"></div>
+                        </div>
+
+                        <!-- 도금 옵션 -->
+                        <div class="form-group">
+                            <label class="form-label">도금 개수 (개당 20천원)</label>
+                            <div class="plating-controls">
+                                <button type="button" id="platingMinus" class="btn btn--secondary btn--sm">-</button>
+                                <span id="platingCount" class="plating-count">0</span>
+                                <button type="button" id="platingPlus" class="btn btn--secondary btn--sm">+</button>
+                            </div>
+                        </div>
+
+                        <!-- 참고가격 계산 -->
+                        <div class="form-group">
+                            <button type="button" id="calculatePrice" class="btn btn--secondary">참고가격 계산</button>
+                            <div id="priceResult" class="price-result"></div>
+                        </div>
+
+                        <!-- 결제수단 -->
+                        <div class="form-group">
+                            <label class="form-label">결제수단 및 금액</label>
+                            <div class="payment-methods">
+                                <div class="payment-method">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cashPayment">
+                                        현금
+                                    </label>
+                                    <div class="payment-input">
+                                        <input type="number" id="cashAmount" class="form-control" disabled placeholder="0">
+                                        <span class="currency-label">천원</span>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="transferPayment">
+                                        계좌이체
+                                    </label>
+                                    <div class="payment-input">
+                                        <input type="number" id="transferAmount" class="form-control" disabled placeholder="0">
+                                        <span class="currency-label">천원</span>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cardPayment">
+                                        카드
+                                    </label>
+                                    <div class="payment-input">
+                                        <input type="number" id="cardAmount" class="form-control" disabled placeholder="0">
+                                        <span class="currency-label">천원</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 고객 분류 -->
+                        <div class="form-group">
+                            <label class="form-label">고객 분류</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="customerType" value="일반" checked>
+                                    일반
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="customerType" value="체험">
+                                    체험
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="customerType" value="기타">
+                                    기타
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 비고 -->
+                        <div class="form-group">
+                            <label for="notes" class="form-label">비고</label>
+                            <textarea id="notes" class="form-control" rows="3" placeholder="특이사항이 있으면 입력해주세요"></textarea>
+                        </div>
+
+                        <!-- 매출 입력 버튼 -->
+                        <button type="button" id="submitSales" class="btn btn--primary btn--full-width">매출 입력</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 우측 당일 누적 데이터 요약 -->
+            <div class="summary-section">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>당일 누적 현황</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">총 주문 건수</span>
+                                <span class="stat-value" id="totalOrders">0건</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">총 매출액</span>
+                                <span class="stat-value" id="totalSales">0천원</span>
+                            </div>
+                        </div>
+
+                        <div class="summary-section-title">결제수단별 매출</div>
+                        <div class="payment-summary">
+                            <div class="payment-stat">
+                                <span>현금</span>
+                                <span id="cashTotal">0천원</span>
+                            </div>
+                            <div class="payment-stat">
+                                <span>계좌이체</span>
+                                <span id="transferTotal">0천원</span>
+                            </div>
+                            <div class="payment-stat">
+                                <span>카드</span>
+                                <span id="cardTotal">0천원</span>
+                            </div>
+                        </div>
+
+                        <div class="summary-section-title">인기 제품 TOP 3</div>
+                        <div class="popular-products" id="popularProducts">
+                            <div class="product-rank">데이터 없음</div>
+                        </div>
+
+                        <div class="summary-section-title">고객 유형별 비율</div>
+                        <div class="customer-ratio">
+                            <div class="ratio-item">
+                                <span>일반</span>
+                                <span id="generalRatio">0%</span>
+                            </div>
+                            <div class="ratio-item">
+                                <span>체험</span>
+                                <span id="experienceRatio">0%</span>
+                            </div>
+                            <div class="ratio-item">
+                                <span>기타</span>
+                                <span id="otherRatio">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <form id="salesForm" class="sales-form">
-            <!-- 반지 제품 선택 -->
-            <div class="form-group">
-                <label for="ringSelect" class="form-label">반지 제품 선택</label>
-                <select id="ringSelect" class="form-control" required>
-                    <option value="">반지를 선택해주세요</option>
-                </select>
-            </div>
-
-            <!-- 도금 개수 -->
-            <div class="form-group">
-                <label class="form-label">도금 개수 (1개당 20천원)</label>
-                <div class="quantity-control">
-                    <button type="button" class="btn btn--secondary quantity-btn" id="platingMinus">-</button>
-                    <input type="number" id="platingCount" class="form-control quantity-input" value="0" min="0" readonly>
-                    <button type="button" class="btn btn--secondary quantity-btn" id="platingPlus">+</button>
-                </div>
-            </div>
-
-            <!-- 참고가격 계산 -->
-            <div class="form-group">
-                <button type="button" class="btn btn--primary btn--lg" id="calculatePrice">참고가격 계산</button>
-                <div id="priceResult" class="price-result hidden"></div>
-            </div>
-
-            <!-- 결제수단 -->
-            <div class="form-group">
-                <label class="form-label">결제수단 (다중 선택 가능)</label>
-                <div class="payment-methods">
-                    <div class="payment-item">
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" id="cashPayment" class="payment-checkbox">
-                            <label for="cashPayment">현금</label>
-                        </div>
-                        <input type="number" id="cashAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
-                    </div>
-                    <div class="payment-item">
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" id="transferPayment" class="payment-checkbox">
-                            <label for="transferPayment">계좌이체</label>
-                        </div>
-                        <input type="number" id="transferAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
-                    </div>
-                    <div class="payment-item">
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" id="cardPayment" class="payment-checkbox">
-                            <label for="cardPayment">카드</label>
-                        </div>
-                        <input type="number" id="cardAmount" class="form-control payment-amount" placeholder="금액 입력" disabled>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 손님 형태 -->
-            <div class="form-group">
-                <label class="form-label">손님 형태</label>
-                <div class="radio-group">
-                    <div class="radio-item">
-                        <input type="radio" id="regular" name="customerType" value="regular" required>
-                        <label for="regular">일반</label>
-                    </div>
-                    <div class="radio-item">
-                        <input type="radio" id="experience" name="customerType" value="experience">
-                        <label for="experience">체험</label>
-                    </div>
-                    <div class="radio-item">
-                        <input type="radio" id="other" name="customerType" value="other">
-                        <label for="other">기타</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 비고란 -->
-            <div class="form-group">
-                <label for="notes" class="form-label">비고</label>
-                <textarea id="notes" class="form-control" rows="3" placeholder="필요시 추가 정보를 입력해주세요"></textarea>
-            </div>
-
-            <!-- 매출 입력 버튼 -->
-            <div class="form-actions">
-                <button type="submit" class="btn btn--primary btn--lg btn--full-width">매출 입력</button>
-            </div>
-        </form>
     </div>
 
-    <!-- 팝업 모달 -->
+    <!-- 성공 알림 모달 -->
     <div id="successModal" class="modal hidden">
         <div class="modal-content">
-            <h3>전송 완료</h3>
             <p>전송되었습니다</p>
-            <button type="button" class="btn btn--primary" id="closeModal">확인</button>
+            <button type="button" id="closeModal" class="btn btn--primary">확인</button>
         </div>
     </div>
-    <div class="modal-overlay hidden" id="modalOverlay"></div>
+
+    <!-- 에러 알림 -->
+    <div id="errorAlert" class="alert alert--error hidden"></div>
 
     <script src="app.js"></script>
 </body>
