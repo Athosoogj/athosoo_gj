@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아뜰리에호수 광주 매출입력 시스템</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>아뜰리에호수 광주 매출입력 시스템</h1>
+        </header>
+
+        <!-- 예약 정보 입력 -->
+        <div class="card">
+            <div class="card__header">
+                <h2>예약 정보</h2>
+            </div>
+            <div class="card__body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="reservationName">예약자 이름</label>
+                        <input type="text" id="reservationName" class="form-control" placeholder="예약자 이름을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="partySize">일행 수</label>
+                        <select id="partySize" class="form-control">
+                            <option value="">선택하세요</option>
+                            <option value="1">1명</option>
+                            <option value="2">2명</option>
+                            <option value="3">3명</option>
+                            <option value="4">4명</option>
+                            <option value="5">5명</option>
+                            <option value="6">6명</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제품 테이블 -->
+        <div class="card" id="productTableCard" style="display: none;">
+            <div class="card__header">
+                <h2>제품 선택</h2>
+            </div>
+            <div class="card__body">
+                <div class="table-container">
+                    <table class="product-table" id="productTable">
+                        <thead>
+                            <tr>
+                                <th>순번</th>
+                                <th>제품명</th>
+                                <th>성별</th>
+                                <th>실측 사이즈</th>
+                                <th>사용 재고 사이즈</th>
+                                <th>도금 여부</th>
+                                <th>가격 (원)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                        </tbody>
+                        <tfoot id="productTableFooter">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결제 정보 -->
+        <div class="card" id="paymentCard" style="display: none;">
+            <div class="card__header">
+                <h2>결제 정보</h2>
+            </div>
+            <div class="card__body">
+                <div class="payment-grid">
+                    <div class="payment-method">
+                        <div class="payment-header">
+                            <input type="checkbox" id="cashPayment" class="payment-checkbox">
+                            <label for="cashPayment" class="payment-label">현금</label>
+                        </div>
+                        <input type="number" id="cashAmount" class="form-control payment-input" placeholder="천원 단위" disabled min="0">
+                        <span class="payment-unit">천원</span>
+                    </div>
+                    <div class="payment-method">
+                        <div class="payment-header">
+                            <input type="checkbox" id="transferPayment" class="payment-checkbox">
+                            <label for="transferPayment" class="payment-label">계좌이체</label>
+                        </div>
+                        <input type="number" id="transferAmount" class="form-control payment-input" placeholder="천원 단위" disabled min="0">
+                        <span class="payment-unit">천원</span>
+                    </div>
+                    <div class="payment-method">
+                        <div class="payment-header">
+                            <input type="checkbox" id="cardPayment" class="payment-checkbox">
+                            <label for="cardPayment" class="payment-label">카드</label>
+                        </div>
+                        <input type="number" id="cardAmount" class="form-control payment-input" placeholder="천원 단위" disabled min="0">
+                        <span class="payment-unit">천원</span>
+                    </div>
+                </div>
+                
+                <div class="payment-summary">
+                    <div class="summary-row">
+                        <span>결제 합계:</span>
+                        <span id="paymentTotal">0원</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>주문 합계:</span>
+                        <span id="orderTotal">0원</span>
+                    </div>
+                </div>
+
+                <button class="btn btn--primary btn--full-width btn--lg" id="submitOrder">매출 입력</button>
+            </div>
+        </div>
+
+        <!-- 통계 패널 (하단으로 이동) -->
+        <div class="card statistics-panel">
+            <div class="card__header">
+                <h2>오늘의 통계</h2>
+            </div>
+            <div class="card__body">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">방문 팀수</span>
+                        <span class="stat-value" id="visitCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">현금 결제</span>
+                        <span class="stat-value" id="cashCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">계좌이체</span>
+                        <span class="stat-value" id="transferCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">카드 결제</span>
+                        <span class="stat-value" id="cardCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 방문자 목록 테이블 -->
+        <div class="card">
+            <div class="card__header">
+                <h2>오늘 방문한 고객</h2>
+            </div>
+            <div class="card__body">
+                <div class="table-container">
+                    <table class="visitors-table">
+                        <thead>
+                            <tr>
+                                <th>예약자 이름</th>
+                                <th>방문자 수</th>
+                                <th>제품명</th>
+                                <th>결제수단</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitorsTableBody">
+                            <tr class="no-data">
+                                <td colspan="4">아직 방문한 고객이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 확인 모달 -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal">
+            <div class="modal__header">
+                <h3>매출 입력 확인</h3>
+            </div>
+            <div class="modal__body">
+                <p id="confirmMessage"></p>
+                <div class="confirm-details">
+                    <div class="detail-row">
+                        <span>예약자:</span>
+                        <span id="confirmName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span>일행 수:</span>
+                        <span id="confirmPartySize"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span>주문 금액:</span>
+                        <span id="confirmOrderAmount"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span>결제 금액:</span>
+                        <span id="confirmPaymentAmount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" id="cancelConfirm">취소</button>
+                <button class="btn btn--primary" id="confirmSubmit">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
